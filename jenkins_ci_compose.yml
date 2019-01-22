@@ -1,0 +1,31 @@
+version: '3.2'
+services:
+    jenkins:
+        container_name: jenkins
+        environment:
+            - 'SONARQUBE_HOST=http://192.168.1.5:9000'
+            - 'SONAR_ENABLED=true'
+            - 'SONAR_SERVER_URL=http://192.168.1.5:9000'
+            - 'SONAR_AUTH_TOKEN=9228bb4f76a756d8ea542cd462bb40ef2777e54b'
+        ports:
+            - '8080:8080'
+            - '50000:50000'
+        image: jenkinsqai:latest
+        volumes:
+            - jenkins_master:/var/jenkins_home
+            - /Users/arun/Documents/tekmentors/Training/devops-22-Jan/jenkins/master/downloads:/var/jenkins_home/downloads
+    jenkins-slave:
+        container_name: jenkins-slave
+        restart: always
+        environment:
+            - 'JENKINS_URL=http://jenkins:8080'
+        image: jenkins-slave
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - jenkins_slave:/home/jenkins
+        depends_on:
+            - jenkins
+
+volumes:
+  jenkins_master:
+  jenkins_slave:
